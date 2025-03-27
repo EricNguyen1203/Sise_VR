@@ -18,10 +18,13 @@ public class ScrollViewCenterDetector : MonoBehaviour
     void Update()
     {
         Transform closestElement = GetCenterElement();
+
+        Transform imageObject = closestElement.transform.GetChild(1);
+
         if (closestElement != null)
         {
             Debug.Log("Centered Item: " + closestElement.name);
-            image.sprite = closestElement.GetComponent<Image>().sprite;
+            image.sprite = imageObject.GetComponent<Image>().sprite;
         }
     }
 

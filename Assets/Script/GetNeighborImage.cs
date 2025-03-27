@@ -28,7 +28,14 @@ public class ImageGridSpawner : MonoBehaviour
         {
             GameObject newImageObject = Instantiate(imagePrefab, parentContainer);
             newImageObject.name = $"Image_{i}";
-            Image imageComponent = newImageObject.GetComponentInChildren<Image>();
+            
+            Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
+            toggleComponent.isOn = false;
+            toggleComponent.group = parentContainer.GetComponent<ToggleGroup>();
+
+            Transform imageObject = newImageObject.transform.GetChild(1);
+
+            Image imageComponent = imageObject.GetComponent<Image>();
 
             if (imageComponent != null)
             {
