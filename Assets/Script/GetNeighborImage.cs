@@ -10,6 +10,7 @@ public class ImageGridSpawner : MonoBehaviour
     public Transform parentContainer; // Parent object to hold images
     public int totalImages = 1000; // Number of images to create
     public List<string> imageUrls; // List of URLs to fetch images from
+    public Image imageFocusScreen;
 
     private void Start()
     {
@@ -32,6 +33,7 @@ public class ImageGridSpawner : MonoBehaviour
             Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
             toggleComponent.isOn = false;
             toggleComponent.group = parentContainer.GetComponent<ToggleGroup>();
+            toggleComponent.onValueChanged.AddListener((isOn) => OnToggleChanged(toggleComponent));
 
             Transform imageObject = newImageObject.transform.GetChild(1);
 
@@ -65,4 +67,22 @@ public class ImageGridSpawner : MonoBehaviour
             }
         }
     }
+
+    void OnToggleChanged(Toggle selectedToggle)
+    {
+        if (selectedToggle.isOn)
+        {
+            Transform imageObject = selectedToggle.transform.GetChild(1);
+
+            Image toggleImage = imageObject.GetComponent<Image>();
+
+            if (toggleImage != null)
+            {
+                // Set the main image screen to the toggle's image
+                imageFocusScreen.sprite = toggleImage.sprite;
+                imageFocusScreen.color = Color.white; // Make sure it's visible
+            }
+        }
+    }
+
 }

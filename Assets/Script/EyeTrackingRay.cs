@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Oculus.Interaction;
 using Oculus.Interaction.Input;
 using Unity.Collections;
 using UnityEngine;
@@ -28,6 +29,10 @@ public class EyeTrackingRay : MonoBehaviour
     private OVRHand _handUsedForPinchSelection;
 
     [SerializeField]
+    private ActiveStateSelector _handPoseSelector; // NEW: Hand pose selector
+
+
+    [SerializeField]
     private bool _mockHandUsedForPinchSelection;
 
     private bool _intercepting;
@@ -40,10 +45,14 @@ public class EyeTrackingRay : MonoBehaviour
     
     private EyeInteractable _lastEyeInteractable;
     // Start is called before the first frame update
+
+    private bool IsPinching;
     void Start()
     {
         _lineRenderer = GetComponent<LineRenderer>();
         _allowPinchSelection = _handUsedForPinchSelection != null ;
+        _handPoseSelector.WhenSelected += () => IsPinching = true;
+        _handPoseSelector.WhenUnselected += () => IsPinching = false;
         SetupRay();
     }
 
@@ -62,7 +71,7 @@ public class EyeTrackingRay : MonoBehaviour
     
     private void Update()
     {
-        _lineRenderer.enabled = !IsPinching();
+        _lineRenderer.enabled = !IsPinching;
 
         SelectionStarted();
 
@@ -76,7 +85,7 @@ public class EyeTrackingRay : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(IsPinching()) return;
+        if(IsPinching) return;
 
         Vector3 rayDirection = transform.TransformDirection(Vector3.forward) * _rayDistance;
 
@@ -103,7 +112,7 @@ public class EyeTrackingRay : MonoBehaviour
     }
 
     private void SelectionStarted(){
-        if (IsPinching()){
+        if (IsPinching){
             _lastEyeInteractable?.Select(true, (_handUsedForPinchSelection?.IsTracked ?? false) ? _handUsedForPinchSelection.transform : transform);
         }
         else {
@@ -116,7 +125,8 @@ public class EyeTrackingRay : MonoBehaviour
         foreach (var interactable in _interactableObjects) interactable.Value.Hover(false);
     }
 
-    private void Oestroy() => _interactableObjects.Clear();
-    private bool IsPinching() => (_allowPinchSelection && _handUsedForPinchSelection.GetFingerIsPinching(OVRHand.HandFinger.Index) || _mockHandUsedForPinchSelection);
+    private void OnDestroy() => _interactableObjects.Clear();
+    // private bool IsPinching() => (_allowPinchSelection && _handUsedForPinchSelection.GetFingerIsPinching(OVRHand.HandFinger.Index) || _mockHandUsedForPinchSelection);
+    // private bool IsPinching();
 
 }

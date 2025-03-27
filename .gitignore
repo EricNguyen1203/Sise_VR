@@ -135,3 +135,6 @@ ProjectSettings/VFXToolboxSettings.asset.meta
 ProjectSettings/EditorBuildSettings.asset
 ProjectSettings/EditorBuildSettings.asset.meta
 
+Assets/XR/
+Assets/XRI/
+ProjectSettings/
