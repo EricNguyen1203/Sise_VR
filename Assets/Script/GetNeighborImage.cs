@@ -79,8 +79,11 @@ public class ImageGridSpawner : MonoBehaviour
             if (toggleImage != null)
             {
                 // Set the main image screen to the toggle's image
-                imageFocusScreen.sprite = toggleImage.sprite;
-                imageFocusScreen.color = Color.white; // Make sure it's visible
+                if (imageFocusScreen != null)
+                {
+                    imageFocusScreen.sprite = toggleImage.sprite;
+                    imageFocusScreen.color = Color.white; // Make sure it's visible
+                }
             }
         }
     }
