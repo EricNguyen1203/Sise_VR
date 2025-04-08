@@ -64,6 +64,13 @@ public class OVRVirtualKeyboard : MonoBehaviour
         private Queue<InteractorRootOverrideData> applyQueue = new Queue<InteractorRootOverrideData>();
         private Queue<InteractorRootOverrideData> revertQueue = new Queue<InteractorRootOverrideData>();
 
+        Action<string> CommitText;
+        Action Backspace;
+        Action Enter;
+        Action KeyboardShown;
+        Action KeyboardHidden;
+
+
         public void Enqueue(Transform interactorRootTransform, OVRPlugin.Posef interactorRootPose)
         {
             if (interactorRootTransform == null)
@@ -308,40 +315,40 @@ public class OVRVirtualKeyboard : MonoBehaviour
             switch (eventDataBuffer.EventType)
             {
                 case OVRPlugin.EventType.VirtualKeyboardCommitText:
-                {
-                    if (keyboard_.CommitTextEvent != null || keyboard_.CommitText != null)
                     {
-                        var eventData = Encoding.UTF8.GetString(eventDataBuffer.EventData)
-                        .Replace("\0", "");
-                        keyboard_.CommitTextEvent?.Invoke(eventData);
-                        keyboard_.CommitText?.Invoke(eventData);
+                        if (keyboard_.CommitTextEvent != null || keyboard_.CommitText != null)
+                        {
+                            var eventData = Encoding.UTF8.GetString(eventDataBuffer.EventData)
+                            .Replace("\0", "");
+                            keyboard_.CommitTextEvent?.Invoke(eventData);
+                            keyboard_.CommitText?.Invoke(eventData);
+                        }
+                        break;
                     }
-                    break;
-                }
                 case OVRPlugin.EventType.VirtualKeyboardBackspace:
-                {
-                    keyboard_.BackspaceEvent?.Invoke();
-                    keyboard_.Backspace?.Invoke();
-                    break;
-                }
+                    {
+                        keyboard_.BackspaceEvent?.Invoke();
+                        keyboard_.Backspace?.Invoke();
+                        break;
+                    }
                 case OVRPlugin.EventType.VirtualKeyboardEnter:
-                {
-                    keyboard_.EnterEvent?.Invoke();
-                    keyboard_.Enter?.Invoke();
-                    break;
-                }
+                    {
+                        keyboard_.EnterEvent?.Invoke();
+                        keyboard_.Enter?.Invoke();
+                        break;
+                    }
                 case OVRPlugin.EventType.VirtualKeyboardShown:
-                {
-                    keyboard_.KeyboardShownEvent?.Invoke();
-                    keyboard_.KeyboardShown?.Invoke();
-                    break;
-                }
+                    {
+                        keyboard_.KeyboardShownEvent?.Invoke();
+                        keyboard_.KeyboardShown?.Invoke();
+                        break;
+                    }
                 case OVRPlugin.EventType.VirtualKeyboardHidden:
-                {
-                    keyboard_.KeyboardHiddenEvent?.Invoke();
-                    keyboard_.KeyboardHidden?.Invoke();
-                    break;
-                }
+                    {
+                        keyboard_.KeyboardHiddenEvent?.Invoke();
+                        keyboard_.KeyboardHidden?.Invoke();
+                        break;
+                    }
             }
         }
 
@@ -1233,6 +1240,8 @@ public class OVRVirtualKeyboard : MonoBehaviour
         {
             return;
         }
+
+        Debug.Log("ChangeTextContext: " + textContext);
 
         var result = OVRPlugin.ChangeVirtualKeyboardTextContext(textContext);
         if (result != OVRPlugin.Result.Success)

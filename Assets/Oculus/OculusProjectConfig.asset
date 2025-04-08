@@ -21,7 +21,7 @@ MonoBehaviour:
   anchorSupport: 0
   sharedAnchorSupport: 0
   renderModelSupport: 1
-  trackedKeyboardSupport: 0
+  trackedKeyboardSupport: 2
   bodyTrackingSupport: 2
   faceTrackingSupport: 2
   eyeTrackingSupport: 2
@@ -35,7 +35,7 @@ MonoBehaviour:
   requiresSystemKeyboard: 0
   experimentalFeaturesEnabled: 0
   insightPassthroughEnabled: 0
-  _insightPassthroughSupport: 0
+  _insightPassthroughSupport: 1
   _processorFavor: 0
   systemSplashScreen: {fileID: 0}
   systemSplashScreenType: 0
