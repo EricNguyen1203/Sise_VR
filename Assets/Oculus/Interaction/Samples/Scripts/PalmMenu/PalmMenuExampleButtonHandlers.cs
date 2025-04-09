@@ -30,9 +30,11 @@ namespace Oculus.Interaction.Samples.PalmMenu
     /// </summary>
     public class PalmMenuExampleButtonHandlers : MonoBehaviour
     {
-        [SerializeField]
-        private GameObject _controlledObject;
+        // [SerializeField]
+        // private GameObject _controlledObject;
 
+        [SerializeField]
+        private GameObject _screenView;
         [SerializeField]
         private Color[] _colors;
 
@@ -92,7 +94,7 @@ namespace Oculus.Interaction.Samples.PalmMenu
             _currentRotationDirectionIdx = _rotationDirections.Length;
             CycleRotationDirection();
 
-            _targetPosition = _controlledObject.transform.position;
+            // _targetPosition = _controlledObject.transform.position;
             IncrementElevation(true);
             IncrementElevation(false);
 
@@ -102,13 +104,13 @@ namespace Oculus.Interaction.Samples.PalmMenu
 
         private void Update()
         {
-            if (_rotationEnabled)
-            {
-                var rotation = Quaternion.Slerp(Quaternion.identity, _rotationDirections[_currentRotationDirectionIdx], _rotationLerpSpeed * Time.deltaTime);
-                _controlledObject.transform.rotation = rotation * _controlledObject.transform.rotation;
-            }
+            // if (_rotationEnabled)
+            // {
+            //     var rotation = Quaternion.Slerp(Quaternion.identity, _rotationDirections[_currentRotationDirectionIdx], _rotationLerpSpeed * Time.deltaTime);
+            //     // _controlledObject.transform.rotation = rotation * _controlledObject.transform.rotation;
+            // }
 
-            _controlledObject.transform.position = Vector3.Lerp(_controlledObject.transform.position, _targetPosition, _elevationChangeLerpSpeed * Time.deltaTime);
+            // _controlledObject.transform.position = Vector3.Lerp(_controlledObject.transform.position, _targetPosition, _elevationChangeLerpSpeed * Time.deltaTime);
         }
 
         /// <summary>
@@ -122,7 +124,7 @@ namespace Oculus.Interaction.Samples.PalmMenu
                 _currentColorIdx = 0;
             }
 
-            _controlledObject.GetComponent<Renderer>().material.SetColor("_Color", _colors[_currentColorIdx]);
+            // _controlledObject.GetComponent<Renderer>().material.SetColor("_Color", _colors[_currentColorIdx]);
         }
 
         /// <summary>
@@ -197,7 +199,13 @@ namespace Oculus.Interaction.Samples.PalmMenu
             }
 
             _shapeNameText.text = _shapeNames[_currentShapeIdx];
-            _controlledObject.GetComponent<MeshFilter>().mesh = _shapes[_currentShapeIdx];
+            // _controlledObject.GetComponent<MeshFilter>().mesh = _shapes[_currentShapeIdx];
+        }
+
+        public void ToggleScreenView()
+        {
+            ToggleRotationEnabled();
+            _screenView.SetActive(!_screenView.activeSelf);
         }
     }
 }
