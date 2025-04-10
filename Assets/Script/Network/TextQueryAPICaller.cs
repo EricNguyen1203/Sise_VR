@@ -11,48 +11,27 @@ public class TextQueryAPICaller : MonoBehaviour
 {
     public TMP_InputField inputField; // Drag your input field (named "Text") here
     public string apiUrl = "http://server.selab.edu.vn:20711/search/search_with_text_query";
+    public string imageUrl = "http://server.selab.edu.vn:20716/"; // Base URL for images
     public GameObject imagePrefab; // Prefab containing an Image component
     public Transform parentContainer; // Parent object to hold images
-    public Image imageFocusScreen;
-
-    [System.Serializable]
-    public class Neighbor
-    {
-        public int? id;
-        public string date;
-        public string time;
-        public float? new_lat;
-        public float? new_lng;
-        public string location_displayed;
-        public string img_link;
-        public float? score;
-    }
-
-    [System.Serializable]
-    public class DataItem
-    {
-        public int? id;
-        public string date;
-        public string time;
-        public float? new_lat;
-        public float? new_lng;
-        public string location_displayed;
-        public string img_link;
-        public float? score;
-        public List<Neighbor> neighbors;
-    }
-
-    [System.Serializable]
-    public class ApiResponse
-    {
-        public int status;
-        public string message;
-        public List<DataItem> data;
-    }
+    public FocusImage imageFocus;
 
     public void OnSubmit()
     {
         string userInput = inputField.text;
+        if (userInput.Length == 0)
+        {
+            Debug.LogWarning("Input field is empty. Please enter a query.");
+            return;
+        }
+
+        if (parentContainer.transform.childCount > 0)
+        {
+            foreach (Transform child in parentContainer.transform)
+            {
+                Destroy(child.gameObject); // Clear previous images
+            }
+        }
         StartCoroutine(SendTextQuery(userInput));
     }
 
@@ -84,7 +63,7 @@ public class TextQueryAPICaller : MonoBehaviour
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // Deserialize the response
-            ApiResponse response = JsonConvert.DeserializeObject<ApiResponse>(request.downloadHandler.text);
+            QueryApiResponse response = JsonConvert.DeserializeObject<QueryApiResponse>(request.downloadHandler.text);
 
             if (response.status == 200)
             {
@@ -97,7 +76,10 @@ public class TextQueryAPICaller : MonoBehaviour
                     Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
                     toggleComponent.isOn = false;
                     toggleComponent.group = parentContainer.GetComponent<ToggleGroup>();
-                    toggleComponent.onValueChanged.AddListener((isOn) => OnToggleChanged(toggleComponent));
+                    // toggleComponent.onValueChanged.AddListener((isOn) => OnToggleChanged(toggleComponent));
+
+                    ToggleImage toggleImageComponent = newImageObject.GetComponent<ToggleImage>();
+                    toggleImageComponent.Setup(item, imageFocus); // Pass the item to the ToggleImage component
 
                     Transform imageObject = newImageObject.transform.GetChild(1);
 
@@ -107,7 +89,7 @@ public class TextQueryAPICaller : MonoBehaviour
                     {
                         
                         string imageUrl = item.img_link; // Use the image link from the API response
-                        imageUrl = imageUrl.Replace("http://127.0.0.1:8000", "http://server.selab.edu.vn:20716");
+                        imageUrl = imageUrl.Replace("http://127.0.0.1:8000", this.imageUrl); // Replace with the base URL for images
 
                         StartCoroutine(LoadImageFromURL(imageUrl, imageComponent));
                     }
@@ -155,6 +137,7 @@ public class TextQueryAPICaller : MonoBehaviour
 
             if (toggleImage != null)
             {
+                Image imageFocusScreen = imageFocus.GetComponent<Image>(); // Assuming FocusImage has an Image component
                 // Set the main image screen to the toggle's image
                 if (imageFocusScreen != null)
                 {
