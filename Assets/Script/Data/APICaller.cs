@@ -8,3 +8,9 @@ public class QueryApiResponse
     public string message;
     public List<DataItem> data;
 }
+
+[Serializable]
+public class ExploreSimilarImageAPiResponse
+{
+    public List<DataItem> response;
+}

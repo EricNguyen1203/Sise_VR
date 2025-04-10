@@ -5,18 +5,20 @@ using UnityEngine.UI;
 
 public class ToggleImage : MonoBehaviour
 {
-    private Toggle _toggle;
+    public Toggle _toggle;
 
     [HideInInspector] public DataItem dataItem;
 
-    private FocusImage focusImage;
+    public FocusImage focusImage;
 
     private void Awake()
     {
-        _toggle = GetComponent<Toggle>();
+        if (_toggle == null)
+            _toggle = GetComponent<Toggle>();
+       
     }
 
-    public void Setup(DataItem item, FocusImage focusRef)
+    public void Setup(DataItem item)
     {
         // Set up the toggle with the data item and reference to the focus image
         // This is where you would set up the UI elements, e.g., setting the image source, etc.
@@ -25,7 +27,6 @@ public class ToggleImage : MonoBehaviour
 
         // Store references for later us
         dataItem = item;
-        focusImage = focusRef;
 
         // Avoid duplicate listeners if reused
         _toggle.onValueChanged.RemoveAllListeners();
@@ -39,6 +40,7 @@ public class ToggleImage : MonoBehaviour
         if (isOn && focusImage != null)
         {
             focusImage.SetFocusedItem(this);
+            Debug.Log($"FocusImage Toggle: {focusImage.currentFocus.dataItem.img_link}");
         }
     }
 }

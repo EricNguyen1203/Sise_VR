@@ -79,7 +79,8 @@ public class TextQueryAPICaller : MonoBehaviour
                     // toggleComponent.onValueChanged.AddListener((isOn) => OnToggleChanged(toggleComponent));
 
                     ToggleImage toggleImageComponent = newImageObject.GetComponent<ToggleImage>();
-                    toggleImageComponent.Setup(item, imageFocus); // Pass the item to the ToggleImage component
+                    toggleImageComponent.Setup(item); // Pass the item to the ToggleImage component
+                    toggleImageComponent.focusImage = imageFocus; // Pass the reference to FocusImage
 
                     Transform imageObject = newImageObject.transform.GetChild(1);
 
