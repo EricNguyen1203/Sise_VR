@@ -14,3 +14,11 @@ public class ExploreSimilarImageAPiResponse
 {
     public List<DataItem> response;
 }
+
+[Serializable]
+public class ExploreNeighborImageAPiResponse
+{
+    public List<DataItem> response;
+}
+
+
