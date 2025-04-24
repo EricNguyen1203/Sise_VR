@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
 public class ScrollViewCenterDetector : MonoBehaviour
 {
@@ -10,12 +11,22 @@ public class ScrollViewCenterDetector : MonoBehaviour
 
     private Image image;
 
+    private bool _isTracking = false;
+
     void Start()
     {
         image = GetComponent<Image>();
     }
 
     void Update()
+    {
+        if (_isTracking)
+        {
+            DetectCenteredItem();
+        }
+    }
+
+    private void DetectCenteredItem()
     {
         Transform closestElement = GetCenterElement();
 
@@ -25,6 +36,10 @@ public class ScrollViewCenterDetector : MonoBehaviour
         {
             Debug.Log("Centered Item: " + closestElement.name);
             image.sprite = imageObject.GetComponent<Image>().sprite;
+        }
+        else
+        {
+            Debug.Log("No centered item found.");
         }
     }
 
@@ -48,5 +63,10 @@ public class ScrollViewCenterDetector : MonoBehaviour
         }
 
         return closest;
+    }
+
+    public void SetTracking(bool isTracking)
+    {
+        _isTracking = isTracking;
     }
 }

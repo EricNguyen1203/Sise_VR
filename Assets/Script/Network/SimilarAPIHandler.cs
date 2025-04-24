@@ -13,10 +13,11 @@ public class SimilarHandler : MonoBehaviour
     [SerializeField] private GameObject _similaritySlider;
     public GameObject imagePrefab; // Prefab containing an Image component
 
-    [SerializeField] string apiUrl = "http://server.selab.edu.vn:20711/explore/explore_similar_images"; // API URL for similarity query
+    [SerializeField] string apiUrl = "http://server.selab.edu.vn:20721/explore/explore_similar_images"; // API URL for similarity query
     [SerializeField] string imageUrl = "http://server.selab.edu.vn:20716"; // Base URL for images
     [SerializeField] private Transform _similarityContainer; // Panel to show similarity slider
     [SerializeField] private FocusImage _focusImage; // Button to toggle similarity
+    [SerializeField] private int _getTopK; // Button to toggle similarity
     void Start()
     {
         _enabledSimilarity = false;
@@ -45,6 +46,7 @@ public class SimilarHandler : MonoBehaviour
 
     IEnumerator SendImageSimilarityQuery(string img_link)
     {
+
         Debug.Log("Sending image similarity query to: " + apiUrl);
         img_link = img_link.Replace("http://127.0.0.1:8000/", "");
         // Prepare request body
@@ -78,35 +80,40 @@ public class SimilarHandler : MonoBehaviour
             // Deserialize the response
             ExploreSimilarImageAPiResponse response = JsonConvert.DeserializeObject<ExploreSimilarImageAPiResponse>(request.downloadHandler.text);
 
+            if (response.response == null || response.response.Count == 0)
+            {
+                Debug.Log("No similar images found in the response.");
+                yield break;
+            }
 
-            foreach (var item in response.response.Take(100))
+            foreach (var item in response.response.Take(_getTopK))
             {
                 GameObject newImageObject = Instantiate(imagePrefab, _similarityContainer);
-                    newImageObject.name = $"Image_{item.id}";
+                newImageObject.name = $"Image_{item.id}";
 
-                    Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
-                    toggleComponent.isOn = false;
-                    toggleComponent.group = _similarityContainer.GetComponent<ToggleGroup>();
-                    // toggleComponent.onValueChanged.AddListener((isOn) => OnToggleChanged(toggleComponent));
+                Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
+                toggleComponent.isOn = false;
+                toggleComponent.group = _similarityContainer.GetComponent<ToggleGroup>();
+                // toggleComponent.onValueChanged.AddListener((isOn) => OnToggleChanged(toggleComponent));
 
-                    ToggleImage toggleImageComponent = newImageObject.GetComponent<ToggleImage>();
-                    toggleImageComponent.Setup(item); // Pass the item to the ToggleImage component
-                    toggleImageComponent.focusImage = _focusImage; // Pass the reference to FocusImage
+                ToggleImage toggleImageComponent = newImageObject.GetComponent<ToggleImage>();
+                toggleImageComponent.Setup(item); // Pass the item to the ToggleImage component
+                toggleImageComponent.focusImage = _focusImage; // Pass the reference to FocusImage
 
-                    Transform imageObject = newImageObject.transform.GetChild(1);
+                Transform imageObject = newImageObject.transform.GetChild(1);
 
-                    Image imageComponent = imageObject.GetComponent<Image>();
+                Image imageComponent = imageObject.GetComponent<Image>();
 
-                    if (imageComponent != null)
-                    {
-                        
-                        string imageUrl = item.img_link; // Use the image link from the API response
-                        imageUrl = imageUrl.Replace("http://127.0.0.1:8000", this.imageUrl); // Replace with the base URL for images
+                if (imageComponent != null)
+                {
 
-                        StartCoroutine(LoadImage(imageUrl, imageComponent));
-                    }
+                    string imageUrl = item.img_link; // Use the image link from the API response
+                    imageUrl = imageUrl.Replace("http://127.0.0.1:8000", this.imageUrl); // Replace with the base URL for images
 
-                    yield return null; // Wait one frame to avoid freezing
+                    StartCoroutine(LoadImage(imageUrl, imageComponent));
+                }
+
+                yield return null; // Wait one frame to avoid freezing
             }
         }
     }

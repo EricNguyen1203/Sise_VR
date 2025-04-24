@@ -10,11 +10,13 @@ using System.Linq;
 public class TextQueryAPICaller : MonoBehaviour
 {
     public TMP_InputField inputField; // Drag your input field (named "Text") here
-    public string apiUrl = "http://server.selab.edu.vn:20711/search/search_with_text_query";
-    public string imageUrl = "http://server.selab.edu.vn:20716/"; // Base URL for images
+    public string apiUrl = "http://server.selab.edu.vn:20721/search/search_with_text_query";
+    public string imageUrlServer = "http://server.selab.edu.vn:20716/"; // Base URL for images
     public GameObject imagePrefab; // Prefab containing an Image component
     public Transform parentContainer; // Parent object to hold images
     public FocusImage imageFocus;
+    public int getTopK;
+    [SerializeField] private TMP_Text shot2;
 
     public void OnSubmit()
     {
@@ -37,14 +39,27 @@ public class TextQueryAPICaller : MonoBehaviour
 
     IEnumerator SendTextQuery(string text)
     {
-        // Prepare request body
+        if (string.IsNullOrEmpty(text))
+        {
+            Debug.LogWarning("Text query is empty. Please enter a valid query.");
+            yield break;
+        }
+
+        if (shot2 != null && !string.IsNullOrEmpty(shot2.text))
+        {
+            Debug.Log("shot2 is not null, setting user_id to: " + shot2.text);
+            text = text + " | " + shot2.text;
+        }
+
         Dictionary<string, string> requestBody = new Dictionary<string, string>
         {
-            { "mode", "vec" },
             { "model", "clips" },
             { "text_query", text },
-            { "user_id", "quan" },
-            { "dataset", "lsc24" }
+            { "dataset", "lsc24" },
+            { "display_window_size", "0"},
+            { "temporal_window_size", "3" },
+            { "use_temporal_window", "false"}
+           
         };
 
         string jsonData = JsonConvert.SerializeObject(requestBody);
@@ -68,7 +83,7 @@ public class TextQueryAPICaller : MonoBehaviour
             if (response.status == 200)
             {
 
-                foreach (var item in response.data.Take(100))
+                foreach (var item in response.data.Take(getTopK))
                 {
                     GameObject newImageObject = Instantiate(imagePrefab, parentContainer);
                     newImageObject.name = $"Image_{item.id}";
@@ -88,9 +103,9 @@ public class TextQueryAPICaller : MonoBehaviour
 
                     if (imageComponent != null)
                     {
-                        
+
                         string imageUrl = item.img_link; // Use the image link from the API response
-                        imageUrl = imageUrl.Replace("http://127.0.0.1:8000", this.imageUrl); // Replace with the base URL for images
+                        imageUrl = imageUrl.Replace("http://127.0.0.1:8000", this.imageUrlServer); // Replace with the base URL for images
 
                         StartCoroutine(LoadImageFromURL(imageUrl, imageComponent));
                     }

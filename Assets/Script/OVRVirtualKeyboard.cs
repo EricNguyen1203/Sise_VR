@@ -78,4 +78,10 @@ public class TextMeshProVirtualKeyboardInputSource : MonoBehaviour
             inputField.onValueChanged.AddListener(OnInputFieldValueChange);
         }
     }
+
+    public void OnChangeTextField(TMP_InputField newInputField)
+    {
+        // Debug.Log("OnChangeTextField: " + inputField.text);
+        inputField = newInputField;
+    }
 }
