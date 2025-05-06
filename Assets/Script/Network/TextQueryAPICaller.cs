@@ -86,7 +86,7 @@ public class TextQueryAPICaller : MonoBehaviour
                 foreach (var item in response.data.Take(getTopK))
                 {
                     GameObject newImageObject = Instantiate(imagePrefab, parentContainer);
-                    newImageObject.name = $"Image_{item.id}";
+                    newImageObject.name = $"Image_{item.record_id}";
 
                     Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
                     toggleComponent.isOn = false;
@@ -105,7 +105,7 @@ public class TextQueryAPICaller : MonoBehaviour
                     {
 
                         string imageUrl = item.img_link; // Use the image link from the API response
-                        imageUrl = imageUrl.Replace("http://127.0.0.1:8000", this.imageUrlServer); // Replace with the base URL for images
+                        imageUrl = imageUrl.Replace("http://server.selab.edu.vn:20716", this.imageUrlServer); // Replace with the base URL for images
 
                         StartCoroutine(LoadImageFromURL(imageUrl, imageComponent));
                     }

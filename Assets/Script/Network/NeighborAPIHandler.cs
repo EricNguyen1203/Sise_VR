@@ -43,7 +43,7 @@ public class NeighborHandler : MonoBehaviour
 
     IEnumerator SendImageNeighborQuery(string img_link)
     {
-        img_link = img_link.Replace("http://127.0.0.1:8000/", "");
+        img_link = img_link.Replace("http://server.selab.edu.vn:20716/", "");
         img_link = img_link.Replace(".jpg", "");
 
         // Prepare request body
@@ -85,7 +85,7 @@ public class NeighborHandler : MonoBehaviour
             foreach (var item in response.response)
             {
                 GameObject newImageObject = Instantiate(imagePrefab, _neighbortyContainer);
-                newImageObject.name = $"Image_{item.id}";
+                newImageObject.name = $"Image_{item.record_id}";
 
                 Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
                 toggleComponent.isOn = false;
@@ -104,7 +104,7 @@ public class NeighborHandler : MonoBehaviour
                 {
 
                     string imageUrl = item.img_link; // Use the image link from the API response
-                    imageUrl = imageUrl.Replace("http://127.0.0.1:8000", this.imageUrl); // Replace with the base URL for images
+                    imageUrl = imageUrl.Replace("http://server.selab.edu.vn:20716/", this.imageUrl); // Replace with the base URL for images
 
                     StartCoroutine(LoadImage(imageUrl, imageComponent));
                     _neighbortyContainer.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 5800);

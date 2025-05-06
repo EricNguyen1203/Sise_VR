@@ -48,7 +48,7 @@ public class SimilarHandler : MonoBehaviour
     {
 
         Debug.Log("Sending image similarity query to: " + apiUrl);
-        img_link = img_link.Replace("http://127.0.0.1:8000/", "");
+        img_link = img_link.Replace("http://server.selab.edu.vn:20716/", "http://10.0.1.21:20716/");
         // Prepare request body
         Dictionary<string, object> requestBody = new Dictionary<string, object>
         {
@@ -89,7 +89,7 @@ public class SimilarHandler : MonoBehaviour
             foreach (var item in response.response.Take(_getTopK))
             {
                 GameObject newImageObject = Instantiate(imagePrefab, _similarityContainer);
-                newImageObject.name = $"Image_{item.id}";
+                newImageObject.name = $"Image_{item.record_id}";
 
                 Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
                 toggleComponent.isOn = false;
@@ -108,7 +108,7 @@ public class SimilarHandler : MonoBehaviour
                 {
 
                     string imageUrl = item.img_link; // Use the image link from the API response
-                    imageUrl = imageUrl.Replace("http://127.0.0.1:8000", this.imageUrl); // Replace with the base URL for images
+                    imageUrl = imageUrl.Replace("http://server.selab.edu.vn:20716/", this.imageUrl); // Replace with the base URL for images
 
                     StartCoroutine(LoadImage(imageUrl, imageComponent));
                 }

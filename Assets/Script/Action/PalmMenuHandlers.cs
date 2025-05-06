@@ -35,6 +35,8 @@ namespace Oculus.Interaction.Samples.PalmMenu
 
         [SerializeField]
         private GameObject _feedbackView;
+        [SerializeField]
+        private GameObject _feedbackButton;
 
         [SerializeField]
         private GameObject _imageFocusView;
@@ -84,8 +86,25 @@ namespace Oculus.Interaction.Samples.PalmMenu
             _feedbackEnabled = !_feedbackEnabled;
             _feedbackEnabledIcon.SetActive(_feedbackEnabled);
             _feedbackDisabledIcon.SetActive(!_feedbackEnabled);
-            _feedbackView.SetActive(_feedbackEnabled);
+            _feedbackButton.SetActive(_feedbackEnabled);
             _imageFocusView.SetActive(!_feedbackEnabled);
+            if (_feedbackEnabled)
+            {
+                SetLayerRecursively(_feedbackView, LayerMask.NameToLayer("Default"));
+            }
+            else
+            {
+                SetLayerRecursively(_feedbackView, LayerMask.NameToLayer("UI"));
+            }
+        }
+
+        void SetLayerRecursively(GameObject obj, int newLayer)
+        {
+            obj.layer = newLayer;
+            foreach (Transform child in obj.transform)
+            {
+                SetLayerRecursively(child.gameObject, newLayer);
+            }
         }
     }
 }

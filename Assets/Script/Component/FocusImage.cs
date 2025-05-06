@@ -28,10 +28,4 @@ public class FocusImage : MonoBehaviour
         // Optionally update a UI image, text, etc. here
         Debug.LogWarning($"FocusImage After: {currentFocus.dataItem.img_link}");
     }
-
-    // public void ClearFocus()
-    // {
-    //     currentFocus = null;
-    //     imageComponent.sprite = null; // Clear the image when focus is lost
-    // }
 }
