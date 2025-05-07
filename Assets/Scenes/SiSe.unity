@@ -27782,6 +27782,46 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 991335976}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2051867323}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenUnselect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1985036655}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayAudio
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OnSubmit
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenUnselect.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayAudio
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Oculus.Interaction.AudioTrigger, Oculus.Interaction.OVR.Samples
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: FeedbackAPIHandler, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718716138263757676, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      propertyPath: _whenUnselect.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Oculus.Interaction.AudioTrigger, Oculus.Interaction.OVR.Samples
+      objectReference: {fileID: 0}
     - target: {fileID: 4556222279012277189, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
       propertyPath: m_Layer
       value: 5
@@ -27952,6 +27992,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5919106134362994299, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2051867319}
+    - targetCorrespondingSourceObject: {fileID: 5919106134362994299, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2051867323}
   m_SourcePrefab: {fileID: 100100000, guid: 5fca3702cdf1a214a94e69dcfa704e17, type: 3}
 --- !u!4 &2051867314 stripped
 Transform:
@@ -28057,6 +28100,26 @@ MonoBehaviour:
   _whenSelectingInteractorViewRemoved:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2051867323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051867318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1918ac6af3ad7bd468577575f6fb279f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  likeImageHolder: {fileID: 1841612465}
+  dislikeImageHolder: {fileID: 1217778363}
+  apiUrl: http://10.0.1.21:20721/feedback
+  imageUrlServer: http://10.0.1.21:20716/
+  imagePrefab: {fileID: 408695217301203619, guid: f2eeeaa6727fb0f49bbb48e6c2171cf7, type: 3}
+  parentContainer: {fileID: 1946524433}
+  imageFocus: {fileID: 368487952}
+  getTopK: 300
 --- !u!4 &2062443359 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7114770129336771049, guid: d6733f35cecdc984c9d50925eb25939e, type: 3}

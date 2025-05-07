@@ -20,6 +20,18 @@ public class ExploreNeighborImageAPiResponse
 {
     public List<DataItem> response;
 }
+
+[Serializable]
+public class FeedbackAPIResponse
+{
+    public FeedbackRespone response;
+}
+
+public class FeedbackRespone
+{
+    public List<DataItem> like;
+    public List<DataItem> dislike;
+}
 [Serializable]
 public class FeedbackGroup
 {

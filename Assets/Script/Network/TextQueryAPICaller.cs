@@ -86,7 +86,7 @@ public class TextQueryAPICaller : MonoBehaviour
                 foreach (var item in response.data.Take(getTopK))
                 {
                     GameObject newImageObject = Instantiate(imagePrefab, parentContainer);
-                    newImageObject.name = $"Image_{item.record_id}";
+                    newImageObject.name = $"{item.record_id}";
 
                     Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
                     toggleComponent.isOn = false;
