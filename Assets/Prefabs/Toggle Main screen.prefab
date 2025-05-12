@@ -14,7 +14,9 @@ GameObject:
   - component: {fileID: 5247998682325457981}
   - component: {fileID: 2166113980523652146}
   - component: {fileID: 3495518605769595671}
-  m_Layer: 5
+  - component: {fileID: 8842743114901060673}
+  - component: {fileID: 417141191449819911}
+  m_Layer: 3
   m_Name: Toggle Main screen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,11 +170,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _toggle: {fileID: 293380845525866688}
   dataItem:
-    date: 
-    time: 
+    image_id: 
+    record_id: 0
+    video_id: 0
+    local_date: 
+    local_time: 
     location_displayed: 
+    ocr: 
+    object_tags: 
     img_link: 
+    score: 0
     neighbors: []
+  focusImage: {fileID: 0}
+--- !u!114 &8842743114901060673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408695217301203619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c83e0c44e1d6afb4ab4b4643800e4f1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsHovered>k__BackingField: 0
+  <IsSelected>k__BackingField: 0
+  OnObjectHovered:
+    m_PersistentCalls:
+      m_Calls: []
+  OnObjectSelected:
+    m_PersistentCalls:
+      m_Calls: []
+  _onHoverActiveMaterial: {fileID: 0}
+  _onSelectActiveMaterial: {fileID: 0}
+  _onIdleMaterial: {fileID: 0}
+--- !u!65 &417141191449819911
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408695217301203619}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 700, y: 700, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4445113945105276907
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,7 +238,7 @@ GameObject:
   - component: {fileID: 1138486001144020265}
   - component: {fileID: 5197900534535697600}
   - component: {fileID: 8088775199509178852}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -280,7 +333,7 @@ GameObject:
   - component: {fileID: 3240053171452629890}
   - component: {fileID: 3742100523752056663}
   - component: {fileID: 810411626316671026}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}

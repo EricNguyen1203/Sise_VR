@@ -24,6 +24,7 @@ public class FeedbackAPIHandler : MonoBehaviour
         int dislikeCount = dislikeImageHolder.transform.childCount;
         List<int> likeImageIds = new List<int>();
         List<int> dislikeImageIds = new List<int>();
+        List<float> priorScores = new List<float>();
 
         for (int i = 0; i < likeCount; i++)
         {
@@ -51,11 +52,25 @@ public class FeedbackAPIHandler : MonoBehaviour
             }
         }
 
+        for (int i = 0; i < likeCount; i++)
+        {
+            Transform child = likeImageHolder.transform.GetChild(i);
+            if (child != null && child.GetComponent<PriorScoreHandler>() != null)
+            {
+                PriorScoreHandler priorScoreHandler = child.GetComponent<PriorScoreHandler>();
+                if (priorScoreHandler != null)
+                {
+                    float score = priorScoreHandler.GetCurrentScore();
+                    priorScores.Add(score);
+                }
+            }
+        }
+
         LikeGroup likeGroup = new LikeGroup
         {
             ids = likeImageIds,
             limit = 20,
-            prior_scores = new List<float> { 0.9f, 0.8f, 0.7f },
+            prior_scores = priorScores
         };
         FeedbackGroup feedbackGroup = new FeedbackGroup
         {
@@ -120,43 +135,6 @@ public class FeedbackAPIHandler : MonoBehaviour
             DeleteDislikeImage(response.response.dislike);
             DeleteLikeImageInDisLikeImage(response.response.like, response.response.dislike);
             HandleLikeImage(response.response.like);
-            // if (response.status == 200)
-            // {
-
-            //     foreach (var item in response.data.Take(getTopK))
-            //     {
-            //         GameObject newImageObject = Instantiate(imagePrefab, parentContainer);
-            //         newImageObject.name = $"Image_{item.record_id}";
-
-            //         Toggle toggleComponent = newImageObject.GetComponent<Toggle>();
-            //         toggleComponent.isOn = false;
-            //         toggleComponent.group = parentContainer.GetComponent<ToggleGroup>();
-            //         // toggleComponent.onValueChanged.AddListener((isOn) => OnToggleChanged(toggleComponent));
-
-            //         ToggleImage toggleImageComponent = newImageObject.GetComponent<ToggleImage>();
-            //         toggleImageComponent.Setup(item); // Pass the item to the ToggleImage component
-            //         toggleImageComponent.focusImage = imageFocus; // Pass the reference to FocusImage
-
-            //         Transform imageObject = newImageObject.transform.GetChild(1);
-
-            //         Image imageComponent = imageObject.GetComponent<Image>();
-
-            //         if (imageComponent != null)
-            //         {
-
-            //             string imageUrl = item.img_link; // Use the image link from the API response
-            //             imageUrl = imageUrl.Replace("http://server.selab.edu.vn:20716", this.imageUrlServer); // Replace with the base URL for images
-
-            //             StartCoroutine(LoadImageFromURL(imageUrl, imageComponent));
-            //         }
-
-            //         yield return null; // Wait one frame to avoid freezing
-            //     }
-            // }
-            // else
-            // {
-            //     Debug.LogWarning("API responded with status: " + response.status);
-            // }
         }
         else
         {

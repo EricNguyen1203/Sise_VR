@@ -173,6 +173,11 @@ MonoBehaviour:
     image_id: 
     record_id: 0
     video_id: 0
+    local_date: 
+    local_time: 
+    location_displayed: 
+    ocr: 
+    object_tags: 
     img_link: 
     score: 0
     neighbors: []

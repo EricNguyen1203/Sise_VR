@@ -4,6 +4,7 @@ using System.Numerics;
 using Oculus.Interaction;
 using Oculus.Interaction.Input;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -29,7 +30,15 @@ public class EyeTrackingRay : MonoBehaviour
     private OVRHand _handUsedForPinchSelection;
 
     [SerializeField]
-    private ActiveStateSelector _handPoseSelector; // NEW: Hand pose selector
+    private ActiveStateSelector _rightThumbsUp; // NEW: Hand pose selector
+    [SerializeField]
+    private ActiveStateSelector _rightThumbsDown; // NEW: Hand pose selector
+
+    [SerializeField]
+    private GazeImageFeedback _likeImageFeedback; // NEW: GazeImageFeedback reference
+
+    [SerializeField]
+    private GazeImageFeedback _dislikeImageFeedback; // NEW: GazeImageFeedback reference
 
 
     [SerializeField]
@@ -42,17 +51,23 @@ public class EyeTrackingRay : MonoBehaviour
     private LineRenderer _lineRenderer;
 
     private Dictionary<int, EyeInteractable> _interactableObjects = new Dictionary<int, EyeInteractable>();
-    
+
     private EyeInteractable _lastEyeInteractable;
+
+    [SerializeField]
     // Start is called before the first frame update
 
-    private bool IsPinching;
+    private bool IsLiking;
+
+    private bool IsDisliking;
     void Start()
     {
         _lineRenderer = GetComponent<LineRenderer>();
-        _allowPinchSelection = _handUsedForPinchSelection != null ;
-        _handPoseSelector.WhenSelected += () => IsPinching = true;
-        _handPoseSelector.WhenUnselected += () => IsPinching = false;
+        _allowPinchSelection = _handUsedForPinchSelection != null;
+        _rightThumbsUp.WhenSelected += () => IsLiking = true;
+        _rightThumbsUp.WhenUnselected += () => IsLiking = false;
+        _rightThumbsDown.WhenSelected += () => IsDisliking = true;
+        _rightThumbsDown.WhenUnselected += () => IsDisliking = false;
         SetupRay();
     }
 
@@ -65,17 +80,18 @@ public class EyeTrackingRay : MonoBehaviour
         _lineRenderer.startColor = _rayColorDefaultState;
         _lineRenderer.endColor = _rayColorDefaultState;
         _lineRenderer.SetPosition(0, transform.position);
-        _lineRenderer.SetPosition(1, new Vector3(transform.position.x, transform.position.y, 
+        _lineRenderer.SetPosition(1, new Vector3(transform.position.x, transform.position.y,
             transform.position.z + _rayDistance));
     }
-    
+
     private void Update()
     {
-        _lineRenderer.enabled = !IsPinching;
+        _lineRenderer.enabled = !IsLiking;
 
         SelectionStarted();
 
-        if(!_intercepting) {
+        if (!_intercepting)
+        {
             _lineRenderer.startColor = _lineRenderer.endColor = _rayColorDefaultState;
             _lineRenderer.SetPosition(1, new Vector3(0, 0, transform.position.z + _rayDistance));
             OnHoverEnded();
@@ -85,19 +101,24 @@ public class EyeTrackingRay : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(IsPinching) return;
+        if (IsLiking) return;
+        if (IsDisliking) return;
 
         Vector3 rayDirection = transform.TransformDirection(Vector3.forward) * _rayDistance;
 
-        _intercepting = Physics.Raycast(transform.position, rayDirection, out RaycastHit hit, Mathf.Infinity ,_layersToInclude);
+        _intercepting = Physics.Raycast(transform.position, rayDirection, out RaycastHit hit, Mathf.Infinity, _layersToInclude);
 
-        if (_intercepting){
+        if (_intercepting)
+        {
+            Debug.Log($"Hit: {hit.transform.name}");
             OnHoverEnded();
 
             _lineRenderer.startColor = _lineRenderer.endColor = _rayColorHoverState;
 
             // keep cache of eye interactable objects
-            if (!_interactableObjects.TryGetValue(hit.transform.GetHashCode(), out EyeInteractable eyeInteractable)){
+            if (!_interactableObjects.TryGetValue(hit.transform.GetHashCode(), out EyeInteractable eyeInteractable))
+            {
+                Debug.Log($"Adding new interactable: {hit.transform.name}");
                 eyeInteractable = hit.transform.GetComponent<EyeInteractable>();
                 _interactableObjects.Add(hit.transform.GetHashCode(), eyeInteractable);
             }
@@ -111,17 +132,31 @@ public class EyeTrackingRay : MonoBehaviour
         }
     }
 
-    private void SelectionStarted(){
-        if (IsPinching){
-            _lastEyeInteractable?.Select(true, (_handUsedForPinchSelection?.IsTracked ?? false) ? _handUsedForPinchSelection.transform : transform);
+    private void SelectionStarted()
+    {
+        if (IsLiking)
+        {
+            // _lastEyeInteractable?.Select(true, (_handUsedForPinchSelection?.IsTracked ?? false) ? _handUsedForPinchSelection.transform : transform);
+            _lastEyeInteractable?.Select(true, _likeImageFeedback);
         }
-        else {
+        else
+        {
             _lastEyeInteractable?.Select(false);
+        }
 
+        if (IsDisliking)
+        {
+            // _lastEyeInteractable?.Select(true, (_handUsedForPinchSelection?.IsTracked ?? false) ? _handUsedForPinchSelection.transform : transform);
+            _lastEyeInteractable?.Select(true, _dislikeImageFeedback);
+        }
+        else
+        {
+            _lastEyeInteractable?.Select(false);
         }
     }
 
-    private void OnHoverEnded(){
+    private void OnHoverEnded()
+    {
         foreach (var interactable in _interactableObjects) interactable.Value.Hover(false);
     }
 
