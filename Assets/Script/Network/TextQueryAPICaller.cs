@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using TMPro; // if you're using TextMeshPro
 using Newtonsoft.Json; // Add Newtonsoft.Json via Unity Package Manager or NuGet
 using System.Linq;
+using AirFishLab.ScrollingList;
+using System.Runtime.ExceptionServices;
+using Oculus.Interaction.PoseDetection;
+using Unity.VisualScripting;
 
 public class TextQueryAPICaller : MonoBehaviour
 {
@@ -16,8 +20,60 @@ public class TextQueryAPICaller : MonoBehaviour
     public Transform parentContainer; // Parent object to hold images
     public FocusImage imageFocus;
     public int getTopK;
-    [SerializeField] private TMP_Text shot2;
+    public List<CircularScrollingList> circularScrollingListsShot1;
+    public List<TMP_InputField> inputFieldsShot1;
+    private Dictionary<string, CircularScrollingList> circularScrollingListDictShot1 = new Dictionary<string, CircularScrollingList>();
+    private Dictionary<string, TMP_InputField> inputFieldDictShot1 = new Dictionary<string, TMP_InputField>();
 
+    private string model;
+    private string dataset;
+    private string mode;
+
+    [SerializeField] private TMP_InputField shot2;
+
+    public List<CircularScrollingList> circularScrollingListsShot2;
+    public List<TMP_InputField> inputFieldsShot2;
+    private Dictionary<string, CircularScrollingList> circularScrollingListDictShot2 = new Dictionary<string, CircularScrollingList>();
+    private Dictionary<string, TMP_InputField> inputFieldDictShot2 = new Dictionary<string, TMP_InputField>();
+
+    void Start()
+    {
+        for (int i = 0; i < circularScrollingListsShot1.Count; i++)
+        {
+            string key = circularScrollingListsShot1[i].name;
+            if (!circularScrollingListDictShot1.ContainsKey(key))
+            {
+                circularScrollingListDictShot1.Add(key, circularScrollingListsShot1[i]);
+            }
+        }
+
+        for (int i = 0; i < inputFieldsShot1.Count; i++)
+        {
+            string key = inputFieldsShot1[i].name;
+            if (!inputFieldDictShot1.ContainsKey(key))
+            {
+                inputFieldDictShot1.Add(key, inputFieldsShot1[i]);
+            }
+        }
+
+        for (int i = 0; i < circularScrollingListsShot2.Count; i++)
+        {
+            string key = circularScrollingListsShot2[i].name;
+            if (!circularScrollingListDictShot2.ContainsKey(key))
+            {
+                circularScrollingListDictShot2.Add(key, circularScrollingListsShot2[i]);
+            }
+        }
+
+        for (int i = 0; i < inputFieldsShot2.Count; i++)
+        {
+            string key = inputFieldsShot2[i].name;
+            if (!inputFieldDictShot2.ContainsKey(key))
+            {
+                inputFieldDictShot2.Add(key, inputFieldsShot2[i]);
+            }
+        }
+    }
     public void OnSubmit()
     {
         string userInput = inputField.text;
@@ -39,27 +95,33 @@ public class TextQueryAPICaller : MonoBehaviour
 
     IEnumerator SendTextQuery(string text)
     {
+        string query = AddFilterText(text, circularScrollingListDictShot1, inputFieldDictShot1);
         if (string.IsNullOrEmpty(text))
         {
             Debug.LogWarning("Text query is empty. Please enter a valid query.");
             yield break;
         }
 
-        if (shot2 != null && !string.IsNullOrEmpty(shot2.text))
+        if (shot2 != null && shot2.text.Length > 0)
         {
-            Debug.Log("shot2 is not null, setting user_id to: " + shot2.text);
-            text = text + " | " + shot2.text;
+            string shot2Text = AddFilterText(shot2.text, circularScrollingListDictShot2, inputFieldDictShot2);
+            Debug.Log("shot2 is not null, setting user_id to: " + shot2Text);
+            query = query + " | " + shot2Text;
         }
+
+        Debug.Log("Text query: " + query);
+
+        GetAPIParams();
 
         Dictionary<string, string> requestBody = new Dictionary<string, string>
         {
-            { "model", "clips" },
-            { "text_query", text },
-            { "dataset", "lsc24" },
+            { "model", model },
+            { "text_query", query },
+            { "dataset", dataset },
             { "display_window_size", "0"},
             { "temporal_window_size", "3" },
             { "use_temporal_window", "false"}
-           
+
         };
 
         string jsonData = JsonConvert.SerializeObject(requestBody);
@@ -162,5 +224,101 @@ public class TextQueryAPICaller : MonoBehaviour
                 }
             }
         }
+    }
+
+
+
+    void GetAPIParams()
+    {
+        for (int i = 0; i < circularScrollingListDictShot1.Count; i++)
+        {
+            // Get the 4th child of the current CircularScrollingList
+            string name = circularScrollingListDictShot1.ElementAt(i).Key;
+            if (name == "Dataset")
+            {
+                Transform child = circularScrollingListDictShot1.ElementAt(i).Value.transform.GetChild(4).GetChild(0);
+                Text childText = child.GetComponent<Text>();
+                if (childText != null)
+                {
+                    dataset = childText.text;
+                    Debug.Log($"Dataset: {dataset}");
+                }
+            }
+            else if (name == "Model")
+            {
+                Transform child = circularScrollingListDictShot1.ElementAt(i).Value.transform.GetChild(4).GetChild(0);
+                Text childText = child.GetComponent<Text>();
+                if (childText != null)
+                {
+                    model = childText.text;
+                    Debug.Log($"Model: {model}");
+                }
+            }
+            else if (name == "Mode")
+            {
+                Transform child = circularScrollingListDictShot1.ElementAt(i).Value.transform.GetChild(4).GetChild(0);
+                Text childText = child.GetComponent<Text>();
+                if (childText != null)
+                {
+                    mode = childText.text;
+                    Debug.Log($"Mode: {mode}");
+                }
+            }
+        }
+    }
+
+    string AddFilterText(string text, Dictionary<string, CircularScrollingList> circularScrollingListDict, Dictionary<string, TMP_InputField> inputFieldDict)
+    {
+        // Add filter text to the input field
+        for (int i = 0; i < circularScrollingListDict.Count; i++)
+        {
+            string key = circularScrollingListDict.ElementAt(i).Key;
+            if (key == "a")
+            {
+                Transform child = circularScrollingListDict.ElementAt(i).Value.transform.GetChild(4).GetChild(0);
+                Text childText = child.GetComponent<Text>();
+                if (childText != null)
+                {
+                    string currentText = childText.text;
+                    text = text + " -a " + currentText;
+                }
+            }
+        }
+
+        for (int i = 0; i < inputFieldDict.Count; i++)
+        {
+            string key = inputFieldDict.ElementAt(i).Key;
+            if (key == "d")
+            {
+                string currentText = inputFieldDict.ElementAt(i).Value.text;
+                // text = text + " -d " + currentText;
+
+                if (currentText.Length > 0)
+                {
+                    text = text + " -d " + currentText;
+                }
+            }
+            else if (key == "ocr")
+            {
+                string currentText = inputFieldDict.ElementAt(i).Value.text;
+                // text = text + " -t " + currentText;
+
+                if (currentText.Length > 0)
+                {
+                    text = text + " -ocr " + currentText;
+                }
+            }
+            else if (key == "l")
+            {
+                string currentText = inputFieldDict.ElementAt(i).Value.text;
+                // text = text + " -l " + currentText;
+
+                if (currentText.Length > 0)
+                {
+                    text = text + " -l " + currentText;
+                }
+            }
+        }
+        return text;
     }
 }

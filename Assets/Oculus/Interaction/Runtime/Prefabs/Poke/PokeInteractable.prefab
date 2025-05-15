@@ -647,7 +647,11 @@ MonoBehaviour:
   parentContainer: {fileID: 0}
   imageFocus: {fileID: 0}
   getTopK: 300
+  circularScrollingListsShot1: []
+  inputFieldsShot1: []
   shot2: {fileID: 0}
+  circularScrollingListsShot2: []
+  inputFieldsShot2: []
 --- !u!1 &6818260453226087683
 GameObject:
   m_ObjectHideFlags: 0
