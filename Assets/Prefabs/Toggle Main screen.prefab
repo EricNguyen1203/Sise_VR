@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 5247998682325457981}
   - component: {fileID: 2166113980523652146}
   - component: {fileID: 3495518605769595671}
-  - component: {fileID: 8842743114901060673}
   - component: {fileID: 417141191449819911}
+  - component: {fileID: 861521392704558358}
   m_Layer: 3
   m_Name: Toggle Main screen
   m_TagString: Untagged
@@ -182,29 +182,6 @@ MonoBehaviour:
     score: 0
     neighbors: []
   focusImage: {fileID: 0}
---- !u!114 &8842743114901060673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 408695217301203619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c83e0c44e1d6afb4ab4b4643800e4f1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <IsHovered>k__BackingField: 0
-  <IsSelected>k__BackingField: 0
-  OnObjectHovered:
-    m_PersistentCalls:
-      m_Calls: []
-  OnObjectSelected:
-    m_PersistentCalls:
-      m_Calls: []
-  _onHoverActiveMaterial: {fileID: 0}
-  _onSelectActiveMaterial: {fileID: 0}
-  _onIdleMaterial: {fileID: 0}
 --- !u!65 &417141191449819911
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -226,6 +203,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 700, y: 700, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &861521392704558358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408695217301203619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54585ee3a65f2134aa81c9bfcd941ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsHovered>k__BackingField: 0
+  <IsSelected>k__BackingField: 0
 --- !u!1 &4445113945105276907
 GameObject:
   m_ObjectHideFlags: 0
