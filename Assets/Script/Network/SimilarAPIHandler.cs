@@ -41,7 +41,7 @@ public class SimilarHandler : MonoBehaviour
             }
         }
 
-        StartCoroutine(SendImageSimilarityQuery(_focusImage.currentFocus.dataItem.img_link));
+        LoadingIndicator.Instance.RunWithIndicator(SendImageSimilarityQuery(_focusImage.currentFocus.dataItem.img_link));
     }
 
     IEnumerator SendImageSimilarityQuery(string img_link)

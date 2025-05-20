@@ -38,7 +38,7 @@ public class NeighborHandler : MonoBehaviour
             }
         }
 
-        StartCoroutine(SendImageNeighborQuery(_focusImage.currentFocus.dataItem.img_link));
+        LoadingIndicator.Instance.RunWithIndicator(SendImageNeighborQuery(_focusImage.currentFocus.dataItem.img_link));
     }
 
     IEnumerator SendImageNeighborQuery(string img_link)

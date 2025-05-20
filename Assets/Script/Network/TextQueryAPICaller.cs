@@ -90,7 +90,10 @@ public class TextQueryAPICaller : MonoBehaviour
                 Destroy(child.gameObject); // Clear previous images
             }
         }
-        StartCoroutine(SendTextQuery(userInput));
+
+        // Begin indicating that the API call is starting
+        LoadingIndicator.Instance.RunWithIndicator(SendTextQuery(userInput));
+        // StartCoroutine(SendTextQuery(userInput));
     }
 
     IEnumerator SendTextQuery(string text)

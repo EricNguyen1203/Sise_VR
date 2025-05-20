@@ -91,7 +91,7 @@ public class FeedbackAPIHandler : MonoBehaviour
         //         Destroy(child.gameObject); // Clear previous images
         //     }
         // }
-        StartCoroutine(SendFeedbackQuery(feedbackGroup, likeGroup));
+        LoadingIndicator.Instance.RunWithIndicator(SendFeedbackQuery(feedbackGroup, likeGroup));
     }
 
     IEnumerator SendFeedbackQuery(FeedbackGroup feedbackGroup, LikeGroup likeGroup)
