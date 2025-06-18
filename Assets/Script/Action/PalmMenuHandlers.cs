@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using TMPro;
 using UnityEngine;
 
@@ -32,6 +31,10 @@ namespace Oculus.Interaction.Samples.PalmMenu
     {
         [SerializeField]
         private GameObject _screenView;
+        [SerializeField]
+        private GameObject _deskTable;
+        [SerializeField]
+        private GameObject _deskSurface;
 
         [SerializeField]
         private GameObject _feedbackView;
@@ -52,25 +55,52 @@ namespace Oculus.Interaction.Samples.PalmMenu
 
         [SerializeField]
         private GameObject _feedbackDisabledIcon;
+        #region Degree Rotation
+        [SerializeField]
+        private TMP_Text _rotationDegreeText;
 
         [SerializeField]
-        private GameObject[] _rotationDirectionIcons;
+        private float _rotationLerpSpeed = 1f;
+
+        [SerializeField]
+        private float _rotationChangeIncrement;
+        #endregion
+
+        #region Elevation
+        [SerializeField]
+        private TMP_Text _elevationText;
+
+        [SerializeField]
+        private float _elevationChangeIncrement;
+
+        [SerializeField]
+        private float _elevationChangeLerpSpeed = 1f;
+        #endregion
 
         private bool _screenEnabled;
         private bool _feedbackEnabled;
 
         private Vector3 _targetPosition;
+        private Vector3 _targetRotation;
 
 
         private void Start()
         {
             _screenEnabled = false;
             _feedbackEnabled = false;
+
+            _targetPosition = _deskTable.transform.position;
+            _targetRotation = _deskSurface.transform.rotation.eulerAngles;
+            IncrementElevation(true);
+            IncrementElevation(false);
+            IncrementRotationDegree(true);
+            IncrementRotationDegree(false);
         }
 
         private void Update()
         {
-
+            _deskTable.transform.position = Vector3.Lerp(_deskTable.transform.position, _targetPosition, _elevationChangeLerpSpeed * Time.deltaTime);
+            _deskSurface.transform.rotation = Quaternion.Lerp(_deskSurface.transform.rotation, Quaternion.Euler(_targetRotation), _rotationLerpSpeed * Time.deltaTime);
         }
 
         public void ToggleScreenEnabled()
@@ -106,5 +136,31 @@ namespace Oculus.Interaction.Samples.PalmMenu
                 SetLayerRecursively(child.gameObject, newLayer);
             }
         }
+        public void IncrementElevation(bool up)
+        {
+            Debug.Log("Incrementing elevation: " + (up ? "up" : "down"));
+            float increment = _elevationChangeIncrement;
+            if (!up)
+            {
+                increment *= -1f;
+            }
+            _targetPosition = new Vector3(_targetPosition.x, Mathf.Clamp(_targetPosition.y + increment, 0.1f, 1f), _targetPosition.z);
+            _elevationText.text = "Elevation: " + _targetPosition.y.ToString("0.00");
+        }
+        
+        public void IncrementRotationDegree(bool clockwise)
+        {
+            Debug.Log("Incrementing rotation degree: " + (clockwise ? "clockwise" : "counter-clockwise"));
+            float increment = _rotationChangeIncrement;
+            if (!clockwise)
+            {
+                increment *= -1f;
+            }
+            float currentRotation = _targetRotation.x;
+            Debug.Log("Current rotation: " + currentRotation);
+            currentRotation = Mathf.Clamp(currentRotation + increment, 0f, 360f);
+            _targetRotation = new Vector3(currentRotation, _targetRotation.y,  _targetRotation.z);
+            _rotationDegreeText.text =  "Degree: " + (_targetRotation.x - 360f).ToString("0.0");
     }
+}
 }
