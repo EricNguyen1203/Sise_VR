@@ -324,4 +324,25 @@ public class TextQueryAPICaller : MonoBehaviour
         }
         return text;
     }
+
+    public void ChangeParentConTainer(Transform newParent)
+    {
+        if (parentContainer != null)
+        {
+            // Move all children to the new parent
+            for (int i = parentContainer.childCount - 1; i >= 0; i--)
+            {
+                Transform child = parentContainer.GetChild(i);
+                child.SetParent(newParent, false); // Keep the local position and rotation
+                child.SetAsFirstSibling(); // Optional: Set as first sibling if needed
+            }
+            parentContainer = newParent;
+            Debug.Log("Parent container changed to: " + newParent.name);
+        }
+        else
+        {
+            Debug.LogWarning("Parent container is null. Cannot change parent.");
+        }
+
+    }
 }

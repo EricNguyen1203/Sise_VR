@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -67,6 +68,8 @@ namespace Oculus.Interaction.Samples.PalmMenu
         #endregion
 
         #region Elevation
+
+
         [SerializeField]
         private TMP_Text _elevationText;
 
@@ -77,8 +80,31 @@ namespace Oculus.Interaction.Samples.PalmMenu
         private float _elevationChangeLerpSpeed = 1f;
         #endregion
 
+        #region ScreenType
+
+        [SerializeField]
+        private TMP_Text _screenTypeText;
+
+        [SerializeField]
+        private string[] _screenTypeNames;
+
+        [SerializeField]
+        private GameObject[] _screenTypeIcons;
+
+        [SerializeField]
+        private Transform[] _screenType;
+
+        [SerializeField]
+        private GameObject[] _screenContainers;
+
+        [SerializeField]
+        private TextQueryAPICaller _textQueryAPICaller;
+
+        #endregion
+
         private bool _screenEnabled;
         private bool _feedbackEnabled;
+        private int _currentScreenTypeIdx;
 
         private Vector3 _targetPosition;
         private Vector3 _targetRotation;
@@ -95,6 +121,9 @@ namespace Oculus.Interaction.Samples.PalmMenu
             IncrementElevation(false);
             IncrementRotationDegree(true);
             IncrementRotationDegree(false);
+
+            _currentScreenTypeIdx = _screenType.Length;
+            CycleRotationDirection();
         }
 
         private void Update()
@@ -130,6 +159,10 @@ namespace Oculus.Interaction.Samples.PalmMenu
 
         void SetLayerRecursively(GameObject obj, int newLayer)
         {
+            if (obj.gameObject.name == "Feedback Button")
+            {
+                return;
+            }
             obj.layer = newLayer;
             foreach (Transform child in obj.transform)
             {
@@ -147,7 +180,7 @@ namespace Oculus.Interaction.Samples.PalmMenu
             _targetPosition = new Vector3(_targetPosition.x, Mathf.Clamp(_targetPosition.y + increment, 0.1f, 1f), _targetPosition.z);
             _elevationText.text = "Elevation: " + _targetPosition.y.ToString("0.00");
         }
-        
+
         public void IncrementRotationDegree(bool clockwise)
         {
             Debug.Log("Incrementing rotation degree: " + (clockwise ? "clockwise" : "counter-clockwise"));
@@ -159,8 +192,56 @@ namespace Oculus.Interaction.Samples.PalmMenu
             float currentRotation = _targetRotation.x;
             Debug.Log("Current rotation: " + currentRotation);
             currentRotation = Mathf.Clamp(currentRotation + increment, 0f, 360f);
-            _targetRotation = new Vector3(currentRotation, _targetRotation.y,  _targetRotation.z);
-            _rotationDegreeText.text =  "Degree: " + (_targetRotation.x - 360f).ToString("0.0");
+            _targetRotation = new Vector3(currentRotation, _targetRotation.y, _targetRotation.z);
+            _rotationDegreeText.text = "Degree: " + (_targetRotation.x - 360f).ToString("0.0");
+        }
+
+        private void ChangeToTextScreen(Transform newContainer)
+        {
+            if (_textQueryAPICaller == null)
+            {
+                Debug.LogError("TextQueryAPICaller is not initialized.");
+                return;
+            }
+
+            if (newContainer.transform.childCount > 0)
+            {
+                foreach (Transform child in newContainer.transform)
+                {
+                    Destroy(child.gameObject);
+                }
+
+            }
+
+            // Change the screen type to text
+            _textQueryAPICaller.ChangeParentConTainer(newContainer);
+        }
+
+        public void CycleRotationDirection()
+        {
+            Debug.Assert(_screenTypeNames.Length == _screenType.Length);
+            Debug.Assert(_screenTypeNames.Length == _screenTypeIcons.Length);
+
+            _currentScreenTypeIdx += 1;
+            if (_currentScreenTypeIdx >= _screenType.Length)
+            {
+                _currentScreenTypeIdx = 0;
+            }
+            ChangeToTextScreen(_screenType[_currentScreenTypeIdx]);
+
+            int nextRotationDirectionIdx = _currentScreenTypeIdx + 1;
+
+            if (nextRotationDirectionIdx >= _screenType.Length)
+            {
+                nextRotationDirectionIdx = 0;
+            }
+
+            _screenTypeText.text = _screenTypeNames[nextRotationDirectionIdx];
+            for (int idx = 0; idx < _screenType.Length; ++idx)
+            {
+                _screenTypeIcons[idx].SetActive(idx == nextRotationDirectionIdx);
+                _screenContainers[idx].SetActive(idx == _currentScreenTypeIdx);
+            }
+        }
     }
-}
 }
